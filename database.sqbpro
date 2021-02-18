@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/nvg-1/Downloads/friends.sqlite3" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="125"/><column_width id="3" width="987"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainFriend"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Friend" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="52"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Highschooler" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="84"/><column index="3" value="59"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Likes" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="52"/><column index="2" value="52"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="Q1">SELECT name
+FROM Highschooler, Friend
+WHERE Highschooler.ID = Friend.ID2
+AND (Friend.ID1 = 1689 
+OR  Friend.ID1 = 1911)
+ORDER BY name
+
+</sql><sql name="Q2">SELECT h1.name AS name1, h1.grade AS grade1, h2.name AS name2, h2.grade AS grade2
+FROM Highschooler h1, Highschooler h2, Likes
+WHERE (h1.grade - h2.grade = 2
+OR h2.grade - h1.grade = 2)
+AND (Likes.ID1 = h1.ID
+AND Likes.ID2 = h2.ID)
+
+</sql><sql name="Q3">SELECT h1.name AS name1, h1.grade AS grade1, h2.name AS name2, h2.grade AS grade2
+FROM Highschooler h1, Highschooler h2, Likes l1, Likes l2
+WHERE h1.name &lt; h2.name
+AND l1.ID1 = h1.ID
+AND l1.ID2 = h2.ID
+AND l2.ID1 = h2.ID
+AND l2.ID2 = h1.ID
+
+
+</sql><sql name="Q4">SELECT name, grade
+FROM Highschooler
+EXCEPT 
+SELECT name, grade FROM Highschooler, Likes
+WHERE (Likes.ID1 = Highschooler.ID
+OR Highschooler.ID = Likes.ID2)
+ORDER BY grade
+
+</sql><sql name="Q5">SELECT h1.name AS name1, h1.grade AS grade1, h2.name AS name2, h2.grade AS grade2
+FROM Highschooler h1, Highschooler h2, Likes
+WHERE Likes.ID1 = h1.ID
+AND Likes.ID2 = h2.ID
+AND NOT EXISTS 
+	(SELECT h2.ID FROM Likes WHERE LIKES.ID1 = h2.ID)
+ORDER BY name1
+
+</sql><sql name="Q6">SELECT h1.name as name, h1.grade as grade
+FROM Highschooler h1
+WHERE h1.ID NOT IN (SELECT ID1 FROM Friend, Highschooler h2
+	WHERE h1.ID = Friend.ID1
+	AND Friend.ID2 = h2.ID
+	and h1.grade != h2.grade) 
+ORDER BY grade, name
+
+</sql><sql name="Q7">SELECT h1.name AS name, h1.grade AS grade, h2.name AS name, h2.grade AS grade, h3.name AS name, h3.grade AS grade
+FROM Highschooler h1, Highschooler h2, Highschooler h3, Friend f1, Friend f2, Likes 
+WHERE h1.ID = Likes.ID1
+AND Likes.ID2 = h2.ID
+AND h2.ID NOT IN( 
+SELECT ID2 
+FROM Friend
+WHERE ID1 = h1.ID)
+AND h1.ID = f1.ID1 
+AND f1.ID2 = h3.ID
+AND h2.ID = f2.ID1
+AND f2.ID2 = h3.ID
+
+
+</sql><sql name="Q8">SELECT count(name) - count(DISTINCT name)
+FROM Highschooler</sql><sql name="Q9">SELECT name, grade
+FROM Highschooler
+INNER JOIN Likes ON Highschooler.ID = Likes.ID2
+GROUP BY ID2
+HAVING Count(ID)&gt;1
+ORDER BY name</sql><current_tab id="8"/></tab_sql></sqlb_project>
